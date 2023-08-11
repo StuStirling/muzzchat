@@ -90,6 +90,7 @@ dependencies {
     implementation(libs.room.ktx)
     kapt(libs.room.compiler)
     coreLibraryDesugaring(libs.tools.desugaring)
+    implementation(libs.coil)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

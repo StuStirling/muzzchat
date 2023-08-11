@@ -19,7 +19,7 @@ class DatabaseModule {
     ) = Room.databaseBuilder(
         context = applicationContext,
         klass = Database::class.java,
-        name = null
+        name = "muzz-chat"
     ).addCallback(DatabaseCallback()).build()
 
     @Provides

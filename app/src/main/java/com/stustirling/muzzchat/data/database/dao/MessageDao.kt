@@ -1,6 +1,7 @@
 package com.stustirling.muzzchat.data.database.dao
 
 import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.Query
 import com.stustirling.muzzchat.data.database.entities.MessageEntity
 import com.stustirling.muzzchat.data.database.entities.MessageTableName
@@ -13,5 +14,6 @@ interface MessageDao {
         participants: Set<String>
     ): Flow<List<MessageEntity>>
 
-
+    @Insert
+    suspend fun insertMessage(message: MessageEntity)
 }

@@ -12,7 +12,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.time.Clock
@@ -25,7 +27,7 @@ class ChatViewModel @Inject constructor(
     private val messagesRepository: MessagesRepository
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<ChatScreenState>(ChatScreenState.Loading)
-    internal val uiState = _uiState.stateIn(
+    internal val uiState = _uiState.onEach { Timber.d("Outputting state: $it ") }.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = ChatScreenState.Loading
@@ -60,18 +62,36 @@ class ChatViewModel @Inject constructor(
         }
     }
 
-    internal fun sendMessage(message: String) {
+    internal fun onEvent(event: ChatScreenEvent) {
+        when (event) {
+            is ChatScreenEvent.MessageChanged -> updateEnteredMessage(event.message)
+            is ChatScreenEvent.SendMessage -> sendMessage()
+        }
+    }
+
+    private fun updateEnteredMessage(newMessage: String) {
+        val content = (uiState.value as? Content) ?: return
+        _uiState.update { content.copy(enteredMessage = newMessage) }
+    }
+
+    private fun sendMessage() {
         val content = (uiState.value as? Content) ?: kotlin.run {
             Timber.w("Must have output content before sending a message")
             return
         }
+
         viewModelScope.launch {
             messagesRepository.sendMessage(
                 authorId = content.currentUser.uid,
                 recipientId = content.recipient.uid,
-                message = message,
+                message = content.enteredMessage,
                 timestamp = clock.millis()
             )
+
+            _uiState.update {
+                if (it !is Content) return@update it
+                it.copy(enteredMessage = "")
+            }
         }
     }
 

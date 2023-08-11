@@ -7,7 +7,6 @@ import com.stustirling.muzzchat.feature.chat.ChatScreenState.Failure
 import com.stustirling.muzzchat.feature.chat.ChatScreenState.Loading
 import com.stustirling.muzzchat.testing.TestMessagesRepository
 import com.stustirling.muzzchat.testing.TestUserRepository
-import io.mockk.coVerify
 import junit.framework.TestCase.assertEquals
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -136,14 +135,44 @@ class ChatViewModelTest {
     }
 
     @Test
-    fun `create message in repo for current user`() = runTest {
+    fun `update the entered message upon event`() = runTest {
         runCurrent()
 
-        viewModel.sendMessage(testMessageFromCurrentUser.content); runCurrent()
+        viewModel.onEvent(ChatScreenEvent.MessageChanged("Test message"))
+        runCurrent()
+
+        assertEquals(
+            "Test message",
+            (viewModel.uiState.value as? Content)?.enteredMessage
+        )
+    }
+
+    @Test
+    fun `create message in repo for current user`() = runTest {
+        runCurrent()
+        viewModel.onEvent(ChatScreenEvent.MessageChanged(testMessageFromCurrentUser.content))
+        runCurrent()
+
+        viewModel.onEvent(ChatScreenEvent.SendMessage); runCurrent()
 
         assertMessageMatchesIgnoringId(
             testMessageFromCurrentUser,
             (viewModel.uiState.value as? Content)?.messages!!.first()
+        )
+    }
+
+    @Test
+    fun `clear the entered message upon send event`() = runTest {
+        runCurrent()
+
+        viewModel.onEvent(ChatScreenEvent.MessageChanged("Test message"))
+        runCurrent()
+
+        viewModel.onEvent(ChatScreenEvent.SendMessage); runCurrent()
+
+        assertEquals(
+            "",
+            (viewModel.uiState.value as Content).enteredMessage
         )
     }
 }
