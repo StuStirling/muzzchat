@@ -39,7 +39,7 @@ class ChatViewModel @Inject constructor(
 
     private fun observeRecipient() {
         viewModelScope.launch(fallbackExceptionHandler) {
-            usersRepository.getNonCurrentUser()
+            usersRepository.getNonCurrentUsers()
                 .map { it.first() }
                 .distinctUntilChanged()
                 .collectLatest {

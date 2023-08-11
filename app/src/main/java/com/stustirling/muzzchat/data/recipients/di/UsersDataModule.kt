@@ -1,4 +1,4 @@
-package com.stustirling.muzzchat.data.di
+package com.stustirling.muzzchat.data.recipients.di
 
 import com.stustirling.muzzchat.data.recipients.UsersRepository
 import com.stustirling.muzzchat.data.recipients.UsersRepositoryImpl
@@ -9,7 +9,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface DataModule {
+interface UsersDataModule {
     @Binds
-    fun bindsUserRepository(usersRepositoryImpl: UsersRepositoryImpl): UsersRepository
+    fun bindsUserRepository(usersRepositoryImpl: UsersRepositoryImpl) : UsersRepository
 }

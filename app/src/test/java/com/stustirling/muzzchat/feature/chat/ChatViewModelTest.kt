@@ -22,7 +22,7 @@ import java.util.UUID
 class ChatViewModelTest {
     companion object {
         private val recipient = User(
-            id = UUID.randomUUID().toString(),
+            uid = UUID.randomUUID().toString(),
             name = "Sarah",
             imageUrl = ""
         )

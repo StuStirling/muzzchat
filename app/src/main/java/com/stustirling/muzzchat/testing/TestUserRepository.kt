@@ -13,7 +13,7 @@ class TestUserRepository : UsersRepository {
     private val nonCurrentUserFlow: MutableSharedFlow<List<User>> =
         MutableSharedFlow(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
-    override fun getNonCurrentUser(): Flow<List<User>> = nonCurrentUserFlow
+    override fun getNonCurrentUsers(): Flow<List<User>> = nonCurrentUserFlow
 
     fun addNonCurrentUsers(users: List<User>) {
         nonCurrentUserFlow.tryEmit(users)
