@@ -24,4 +24,6 @@ class DatabaseModule {
 
     @Provides
     fun providesUserDao(database: Database) = database.userDao()
+    @Provides
+    fun providesMessageDao(database: Database) = database.messageDao()
 }

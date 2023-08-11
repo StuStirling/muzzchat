@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.utils.toSetOrEmpty
 import org.jetbrains.kotlin.kapt3.base.Kapt.kapt
 
 @Suppress("DSL_SCOPE_VIOLATION") // TODO: Remove once KTIJ-19369 is fixed
@@ -19,6 +20,8 @@ android {
         versionCode = 1
         versionName = "1.0"
 
+        multiDexEnabled = true
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
             useSupportLibrary = true
@@ -32,6 +35,7 @@ android {
                 )
             }
         }
+
     }
 
 
@@ -47,6 +51,8 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+
+        isCoreLibraryDesugaringEnabled = true
     }
     kotlinOptions {
         jvmTarget = "11"
@@ -83,6 +89,7 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     kapt(libs.room.compiler)
+    coreLibraryDesugaring(libs.tools.desugaring)
 
     testImplementation(libs.junit)
     testImplementation(libs.mockk)

@@ -15,6 +15,7 @@ mockk = "1.13.5"
 kotlinx-coroutines = "1.7.3"
 timber = "5.0.1"
 room = "2.5.2"
+desugaring = "2.0.3"
 
 [libraries]
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
@@ -42,6 +43,7 @@ timber = { group = "com.jakewharton.timber", name = "timber", version.ref = "tim
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 room-compiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
+tools-desugaring = { group = "com.android.tools", name = "desugar_jdk_libs", version.ref = "desugaring" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "agp" }

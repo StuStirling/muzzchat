@@ -3,7 +3,6 @@ package com.stustirling.muzzchat.data.database.entities
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.stustirling.muzzchat.model.User
 
 internal const val UsersTableName = "users"
 @Entity(tableName = UsersTableName)

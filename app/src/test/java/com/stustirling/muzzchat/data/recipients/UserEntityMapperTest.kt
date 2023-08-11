@@ -1,7 +1,7 @@
 package com.stustirling.muzzchat.data.recipients
 
 import com.stustirling.muzzchat.data.database.entities.UserEntity
-import com.stustirling.muzzchat.model.User
+import com.stustirling.muzzchat.core.model.User
 import junit.framework.Assert.assertEquals
 import org.junit.Test
 import java.util.UUID
@@ -22,6 +22,7 @@ class UserEntityMapperTest {
             User(
                 uid = userEntity.uid,
                 name = userEntity.name,
+                isCurrentUser = userEntity.isCurrentUser,
                 imageUrl = userEntity.imageUrl
             ),
             mapper.mapEntityToDomain(userEntity)

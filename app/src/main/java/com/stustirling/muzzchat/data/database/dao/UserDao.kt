@@ -8,6 +8,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface UserDao {
-    @Query("SELECT * FROM $UsersTableName WHERE is_current_user = 0")
-    fun getNonCurrentUsers() : Flow<List<UserEntity>>
+    @Query("SELECT * FROM $UsersTableName")
+    fun getUsers() : Flow<List<UserEntity>>
 }
