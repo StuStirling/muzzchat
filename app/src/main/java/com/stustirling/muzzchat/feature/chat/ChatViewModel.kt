@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -24,7 +25,8 @@ import javax.inject.Inject
 class ChatViewModel @Inject constructor(
     private val clock: Clock,
     private val usersRepository: UsersRepository,
-    private val messagesRepository: MessagesRepository
+    private val messagesRepository: MessagesRepository,
+    private val messageItemBuilder: MessageItemBuilder
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<ChatScreenState>(ChatScreenState.Loading)
     internal val uiState = _uiState.onEach { Timber.d("Outputting state: $it ") }.stateIn(
@@ -51,6 +53,12 @@ class ChatViewModel @Inject constructor(
                     val recipient = it.first { user -> !user.isCurrentUser }
 
                     messagesRepository.getMessages(setOf(currentUser.uid, recipient.uid))
+                        .map { messages ->
+                            messageItemBuilder.buildMessageItems(
+                                currentUser.uid,
+                                messages
+                            )
+                        }
                         .collectLatest { messages ->
                             _uiState.value = Content(
                                 recipient = recipient,

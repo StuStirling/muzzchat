@@ -3,11 +3,14 @@ package com.stustirling.muzzchat.feature.chat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -50,7 +53,6 @@ internal fun ChatRoute(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ChatScreen(
     onNavigateUp: () -> Unit,
@@ -83,12 +85,20 @@ private fun ChatScreen(
 
                 is ChatScreenState.Content -> {
                     Column(Modifier.fillMaxWidth()) {
-                        Box(
+                        LazyColumn(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .weight(1f)
-                                .background(Color.Red)
-                        )
+                                .weight(1f),
+                            contentPadding = PaddingValues(12.dp),
+                            reverseLayout = true,
+                        ) {
+                            items(
+                                items = chatScreenState.messages.reversed(),
+                                key = { message -> message.id }
+                            ) { message ->
+                                Text(text = message.content)
+                            }
+                        }
 
                         Box(modifier = Modifier.fillMaxWidth()) {
                             Row(
@@ -104,7 +114,8 @@ private fun ChatScreen(
                                         unfocusedIndicatorColor = if (chatScreenState.enteredMessage.isBlank()) Color.LightGray else MuzzPink,
                                         focusedIndicatorColor = MuzzPink,
                                         unfocusedContainerColor = MaterialTheme.colorScheme.primary,
-                                        focusedContainerColor = MaterialTheme.colorScheme.primary
+                                        focusedContainerColor = MaterialTheme.colorScheme.primary,
+                                        cursorColor = Color.Black
                                     ),
                                     shape = RoundedCornerShape(50),
                                     value = chatScreenState.enteredMessage,

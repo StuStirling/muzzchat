@@ -40,12 +40,13 @@ class ChatViewModelTest {
         )
         private val fixedClock = Clock.fixed(Instant.now(), ZoneOffset.UTC)
 
-        private val testMessageFromCurrentUser = Message(
-            authorId = currentUser.uid,
-            recipientId = recipient.uid,
+        private val testMessageFromCurrentUser = MessageItem(
+            id = 0,
+            isCurrentUser = true,
             content = "Test message",
             timestamp = fixedClock.millis(),
-            id = 0
+            showTimeHeading = true,
+            showTail = true
         )
     }
 
@@ -59,7 +60,8 @@ class ChatViewModelTest {
     fun setUp() {
         Dispatchers.setMain(StandardTestDispatcher())
         userRepository.setUsers(listOf(currentUser, recipient))
-        viewModel = ChatViewModel(fixedClock, userRepository, messagesRepository)
+        viewModel =
+            ChatViewModel(fixedClock, userRepository, messagesRepository, MessageItemBuilder())
     }
 
     @After
@@ -98,16 +100,20 @@ class ChatViewModelTest {
     }
 
     private fun assertMessageMatchesIgnoringId(
-        expected: Message,
-        actual: Message
+        expected: MessageItem,
+        actual: MessageItem
     ) {
         assertEquals(
-            expected.authorId,
-            actual.authorId
+            expected.isCurrentUser,
+            actual.isCurrentUser
         )
         assertEquals(
-            expected.recipientId,
-            actual.recipientId
+            expected.showTail,
+            actual.showTail
+        )
+        assertEquals(
+            expected.showTimeHeading,
+            actual.showTimeHeading
         )
         assertEquals(
             expected.content,
@@ -122,8 +128,8 @@ class ChatViewModelTest {
     @Test
     fun `output messages in state`() = runTest {
         messagesRepository.sendMessage(
-            authorId = testMessageFromCurrentUser.authorId,
-            recipientId = testMessageFromCurrentUser.recipientId,
+            authorId = currentUser.uid,
+            recipientId = recipient.uid,
             message = testMessageFromCurrentUser.content,
             timestamp = testMessageFromCurrentUser.timestamp
         ); runCurrent()

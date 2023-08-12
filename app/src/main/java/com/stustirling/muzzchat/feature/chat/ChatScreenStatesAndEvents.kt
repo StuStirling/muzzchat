@@ -8,7 +8,7 @@ sealed interface ChatScreenState {
     data class Content(
         val currentUser: User,
         val recipient: User,
-        val messages: List<Message>,
+        val messages: List<MessageItem>,
         val enteredMessage: String = ""
     ) : ChatScreenState
 
