@@ -1,6 +1,5 @@
 package com.stustirling.muzzchat.feature.chat
 
-import com.stustirling.muzzchat.core.model.Message
 import com.stustirling.muzzchat.core.model.User
 import com.stustirling.muzzchat.feature.chat.ChatScreenState.Content
 import com.stustirling.muzzchat.feature.chat.ChatScreenState.Failure
@@ -8,9 +7,13 @@ import com.stustirling.muzzchat.feature.chat.ChatScreenState.Loading
 import com.stustirling.muzzchat.testing.TestMessagesRepository
 import com.stustirling.muzzchat.testing.TestUserRepository
 import junit.framework.TestCase.assertEquals
+import junit.framework.TestCase.assertTrue
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
@@ -179,6 +182,51 @@ class ChatViewModelTest {
         assertEquals(
             "",
             (viewModel.uiState.value as Content).enteredMessage
+        )
+    }
+
+    @Test
+    fun `toggle between authors`() = runTest {
+        runCurrent()
+
+        viewModel.onEvent(ChatScreenEvent.SwitchAuthor)
+        runCurrent()
+
+        assertEquals(
+            recipient,
+            (viewModel.uiState.value as? Content)?.currentAuthor
+        )
+
+        assertEquals(
+            currentUser,
+            (viewModel.uiState.value as? Content)?.recipient
+        )
+    }
+
+    private fun TestScope.sendMessageAfterTogglingAuthor() {
+        runCurrent()
+        viewModel.onEvent(ChatScreenEvent.SwitchAuthor); runCurrent()
+        viewModel.onEvent(ChatScreenEvent.MessageChanged("Test message")); runCurrent()
+
+        viewModel.onEvent(ChatScreenEvent.SendMessage); runCurrent()
+    }
+
+    @Test
+    fun `send message from correct author after toggle`() = runTest {
+        sendMessageAfterTogglingAuthor()
+
+        val authorOfMessageIsCurrentUser =
+            (viewModel.uiState.value as? Content)?.messages?.first()?.isCurrentUser
+        assertTrue(authorOfMessageIsCurrentUser != null && authorOfMessageIsCurrentUser == false)
+    }
+
+    @Test
+    fun `author should stay the same after sending a message`() = runTest {
+       sendMessageAfterTogglingAuthor()
+
+        assertEquals(
+            recipient,
+            (viewModel.uiState.value as? Content)?.currentAuthor
         )
     }
 }

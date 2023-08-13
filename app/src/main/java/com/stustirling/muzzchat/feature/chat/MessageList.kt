@@ -18,7 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
@@ -28,8 +27,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.stustirling.muzzchat.feature.chat.theme.currentUserChat
+import com.stustirling.muzzchat.feature.chat.theme.onCurrentUserChat
+import com.stustirling.muzzchat.feature.chat.theme.onOtherUserChat
+import com.stustirling.muzzchat.feature.chat.theme.otherUserChat
 import com.stustirling.muzzchat.ui.theme.MuzzChatTheme
-import com.stustirling.muzzchat.ui.theme.MuzzPink
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -116,8 +118,9 @@ private fun MessageBubble(
                 .widthIn(max = maxWidth * .85f)
                 .align(if (messageItem.isCurrentUser) Alignment.CenterEnd else Alignment.CenterStart)
                 .background(
-                    if (messageItem.isCurrentUser) MuzzPink else Color(0xFFE7E7E7),
-                    RoundedCornerShape(
+                    color = if (messageItem.isCurrentUser) MuzzChatTheme.colors.currentUserChat()
+                    else MuzzChatTheme.colors.otherUserChat(),
+                    shape = RoundedCornerShape(
                         topStart = 18.dp,
                         topEnd = 18.dp,
                         bottomStart = if (!messageItem.isCurrentUser && messageItem.showTail) 0.dp else 18.dp,
@@ -126,7 +129,8 @@ private fun MessageBubble(
                 )
                 .padding(8.dp),
             text = messageItem.content,
-            color = if (messageItem.isCurrentUser) Color.White else Color.Black
+            color = if (messageItem.isCurrentUser) MuzzChatTheme.colors.onCurrentUserChat()
+            else MuzzChatTheme.colors.onOtherUserChat()
         )
     }
 }

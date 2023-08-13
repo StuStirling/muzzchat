@@ -46,7 +46,10 @@ private fun ChatScreen(
 ) {
     Scaffold(
         topBar = {
-            ChatTopAppBar(onNavigateUp = onNavigateUp, state = chatScreenState)
+            ChatTopAppBar(
+                onNavigateUp = onNavigateUp,
+                state = chatScreenState,
+                onSwitchAuthor = { onEvent(ChatScreenEvent.SwitchAuthor) })
         }
     ) {
         Box(
@@ -153,7 +156,7 @@ private fun Preview() {
     MuzzChatTheme {
         ChatScreen(
             onNavigateUp = { /*TODO*/ }, chatScreenState = ChatScreenState.Content(
-                currentUser = User("", isCurrentUser = true, name = "Stu", imageUrl = null),
+                currentAuthor = User("", isCurrentUser = true, name = "Stu", imageUrl = null),
                 recipient = User("", isCurrentUser = false, name = "Sarah", imageUrl = null),
                 messages = emptyList()
             ),
@@ -168,7 +171,7 @@ private fun LoadingPreview() {
     MuzzChatTheme {
         ChatScreen(
             onNavigateUp = { /*TODO*/ }, chatScreenState = ChatScreenState.Content(
-                currentUser = User("", isCurrentUser = true, name = "Stu", imageUrl = null),
+                currentAuthor = User("", isCurrentUser = true, name = "Stu", imageUrl = null),
                 recipient = User("", isCurrentUser = false, name = "Sarah", imageUrl = null),
                 messages = emptyList()
             ),

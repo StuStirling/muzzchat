@@ -1,5 +1,7 @@
 package com.stustirling.muzzchat.feature.chat
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -30,7 +32,7 @@ internal fun MessageInputField(
     modifier: Modifier = Modifier,
     enteredMessage: String,
     onMessageEntered: (String) -> Unit,
-    onSubmitPressed: () -> Unit
+    onSubmitPressed: () -> Unit,
 ) {
     Box(modifier = modifier) {
         Row(
@@ -63,7 +65,8 @@ internal fun MessageInputField(
                     disabledContainerColor = MuzzPink.copy(alpha = .4f)
                 ),
                 enabled = enteredMessage.isNotBlank(),
-                onClick = onSubmitPressed
+                onClick = onSubmitPressed,
+
             ) {
                 Icon(
                     imageVector = Icons.Default.Send,

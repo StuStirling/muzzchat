@@ -40,6 +40,8 @@ class ChatViewModel @Inject constructor(
         _uiState.value = Failure
     }
 
+    private var justSentMessageTimestamp: Long? = null
+
     init {
         observeRecipient()
     }
@@ -60,11 +62,19 @@ class ChatViewModel @Inject constructor(
                             )
                         }
                         .collectLatest { messages ->
-                            _uiState.value = Content(
-                                recipient = recipient,
-                                currentUser = currentUser,
-                                messages = messages
-                            )
+                            _uiState.value =
+                                (uiState.value as? Content)?.let { existingContent ->
+                                    existingContent.copy(
+                                        messages = messages,
+                                        enteredMessage = if (justSentMessageTimestamp == messages.lastOrNull()?.timestamp) {
+                                            ""
+                                        } else existingContent.enteredMessage
+                                    )
+                                } ?: Content(
+                                    recipient = recipient,
+                                    currentAuthor = currentUser,
+                                    messages = messages
+                                )
                         }
                 }
         }
@@ -74,6 +84,7 @@ class ChatViewModel @Inject constructor(
         when (event) {
             is ChatScreenEvent.MessageChanged -> updateEnteredMessage(event.message)
             is ChatScreenEvent.SendMessage -> sendMessage()
+            is ChatScreenEvent.SwitchAuthor -> switchAuthor()
         }
     }
 
@@ -89,18 +100,20 @@ class ChatViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
+            val timestamp = clock.millis()
+            justSentMessageTimestamp = timestamp
             messagesRepository.sendMessage(
-                authorId = content.currentUser.uid,
+                authorId = content.currentAuthor.uid,
                 recipientId = content.recipient.uid,
                 message = content.enteredMessage,
-                timestamp = clock.millis()
+                timestamp = timestamp
             )
-
-            _uiState.update {
-                if (it !is Content) return@update it
-                it.copy(enteredMessage = "")
-            }
         }
+    }
+
+    private fun switchAuthor() {
+        val content = (uiState.value as? Content) ?: return
+        _uiState.update { content.copyAndSwitchAuthor() }
     }
 
 
