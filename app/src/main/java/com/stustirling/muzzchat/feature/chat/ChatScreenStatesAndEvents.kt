@@ -1,6 +1,7 @@
 package com.stustirling.muzzchat.feature.chat
 
 import com.stustirling.muzzchat.core.model.User
+import com.stustirling.muzzchat.feature.chat.messages.MessageItem
 
 sealed interface ChatScreenState {
     object Loading : ChatScreenState

@@ -1,7 +1,7 @@
-package com.stustirling.muzzchat.data.recipients.di
+package com.stustirling.muzzchat.data.users.di
 
-import com.stustirling.muzzchat.data.recipients.UsersRepository
-import com.stustirling.muzzchat.data.recipients.UsersRepositoryImpl
+import com.stustirling.muzzchat.data.users.UsersRepository
+import com.stustirling.muzzchat.data.users.UsersRepositoryImpl
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

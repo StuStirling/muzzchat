@@ -4,6 +4,8 @@ import com.stustirling.muzzchat.core.model.User
 import com.stustirling.muzzchat.feature.chat.ChatScreenState.Content
 import com.stustirling.muzzchat.feature.chat.ChatScreenState.Failure
 import com.stustirling.muzzchat.feature.chat.ChatScreenState.Loading
+import com.stustirling.muzzchat.feature.chat.messages.MessageItem
+import com.stustirling.muzzchat.feature.chat.messages.MessageItemBuilder
 import com.stustirling.muzzchat.testing.TestMessagesRepository
 import com.stustirling.muzzchat.testing.TestUserRepository
 import junit.framework.TestCase.assertEquals
@@ -12,8 +14,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestScope
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest

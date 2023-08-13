@@ -3,9 +3,10 @@ package com.stustirling.muzzchat.feature.chat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.stustirling.muzzchat.data.messages.MessagesRepository
-import com.stustirling.muzzchat.data.recipients.UsersRepository
+import com.stustirling.muzzchat.data.users.UsersRepository
 import com.stustirling.muzzchat.feature.chat.ChatScreenState.Content
 import com.stustirling.muzzchat.feature.chat.ChatScreenState.Failure
+import com.stustirling.muzzchat.feature.chat.messages.MessageItemBuilder
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,7 +14,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -29,7 +29,7 @@ class ChatViewModel @Inject constructor(
     private val messageItemBuilder: MessageItemBuilder
 ) : ViewModel() {
     private val _uiState = MutableStateFlow<ChatScreenState>(ChatScreenState.Loading)
-    internal val uiState = _uiState.onEach { Timber.d("Outputting state: $it ") }.stateIn(
+    internal val uiState = _uiState.stateIn(
         scope = viewModelScope,
         started = SharingStarted.Eagerly,
         initialValue = ChatScreenState.Loading
@@ -40,6 +40,8 @@ class ChatViewModel @Inject constructor(
         _uiState.value = Failure
     }
 
+    // Used to remove the enteredMessage if the sent message
+    // is observed as being sent successfully
     private var justSentMessageTimestamp: Long? = null
 
     init {
@@ -57,8 +59,8 @@ class ChatViewModel @Inject constructor(
                     messagesRepository.getMessages(setOf(currentUser.uid, recipient.uid))
                         .map { messages ->
                             messageItemBuilder.buildMessageItems(
-                                currentUser.uid,
-                                messages
+                                currentUserId = currentUser.uid,
+                                messages = messages
                             )
                         }
                         .collectLatest { messages ->
@@ -79,7 +81,6 @@ class ChatViewModel @Inject constructor(
                 }
         }
     }
-
     internal fun onEvent(event: ChatScreenEvent) {
         when (event) {
             is ChatScreenEvent.MessageChanged -> updateEnteredMessage(event.message)
@@ -115,6 +116,5 @@ class ChatViewModel @Inject constructor(
         val content = (uiState.value as? Content) ?: return
         _uiState.update { content.copyAndSwitchAuthor() }
     }
-
 
 }

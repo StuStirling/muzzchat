@@ -1,7 +1,5 @@
 package com.stustirling.muzzchat.feature.chat
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,10 +19,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
 import com.stustirling.muzzchat.ui.theme.MuzzPink
 
 @Composable
@@ -42,37 +38,64 @@ internal fun MessageInputField(
                 .imePadding(),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            OutlinedTextField(
+            MessageTextField(
                 modifier = Modifier.weight(1f),
-                colors = TextFieldDefaults.colors(
-                    unfocusedIndicatorColor = if (enteredMessage.isBlank()) Color.LightGray else MuzzPink,
-                    focusedIndicatorColor = MuzzPink,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
-                    focusedContainerColor = MaterialTheme.colorScheme.background,
-                    cursorColor = Color.Black
-                ),
-                shape = RoundedCornerShape(50),
-                value = enteredMessage,
-                onValueChange = onMessageEntered)
+                enteredMessage = enteredMessage,
+                onMessageEntered = onMessageEntered
+            )
 
-            IconButton(
+            SubmitButton(
                 modifier = Modifier
-                    .padding(start = 8.dp)
-                    .clip(CircleShape),
-                colors = IconButtonDefaults.iconButtonColors(
-                    containerColor = MuzzPink,
-                    contentColor = MaterialTheme.colorScheme.onTertiary,
-                    disabledContainerColor = MuzzPink.copy(alpha = .4f)
-                ),
+                    .padding(start = 8.dp),
                 enabled = enteredMessage.isNotBlank(),
-                onClick = onSubmitPressed,
-
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Send,
-                    contentDescription = null
-                )
-            }
+                onSubmitPressed = onSubmitPressed
+            )
         }
+    }
+}
+
+@Composable
+private fun MessageTextField(
+    modifier: Modifier = Modifier,
+    enteredMessage: String,
+    onMessageEntered: (String) -> Unit
+) {
+    OutlinedTextField(
+        modifier = modifier,
+        colors = TextFieldDefaults.colors(
+            unfocusedIndicatorColor = if (enteredMessage.isBlank()) Color.LightGray else MuzzPink,
+            focusedIndicatorColor = MuzzPink,
+            unfocusedContainerColor = MaterialTheme.colorScheme.background,
+            focusedContainerColor = MaterialTheme.colorScheme.background,
+            cursorColor = Color.Black
+        ),
+        shape = RoundedCornerShape(50),
+        value = enteredMessage,
+        onValueChange = onMessageEntered
+    )
+}
+
+@Composable
+private fun SubmitButton(
+    modifier: Modifier = Modifier,
+    enabled: Boolean,
+    onSubmitPressed: () -> Unit
+) {
+    IconButton(
+        modifier = modifier
+            .clip(CircleShape),
+        colors = IconButtonDefaults.iconButtonColors(
+            containerColor = MuzzPink,
+            contentColor = MaterialTheme.colorScheme.onTertiary,
+            disabledContainerColor = MuzzPink.copy(alpha = .4f)
+        ),
+        enabled = enabled,
+        onClick = onSubmitPressed,
+
+        ) {
+        Icon(
+            imageVector = Icons.Default.Send,
+            contentDescription = null
+        )
     }
 }

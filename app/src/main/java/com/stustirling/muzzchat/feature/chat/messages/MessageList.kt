@@ -1,4 +1,4 @@
-package com.stustirling.muzzchat.feature.chat
+package com.stustirling.muzzchat.feature.chat.messages
 
 import android.text.format.DateFormat
 import androidx.compose.foundation.background
@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -24,6 +23,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -49,6 +49,7 @@ internal fun MessageList(
     messages: List<MessageItem>
 ) {
     val lazyListState = rememberLazyListState()
+
     LazyColumn(
         modifier = modifier,
         state = lazyListState,
@@ -91,34 +92,39 @@ private fun TimeHeader(
     modifier: Modifier = Modifier,
     timestamp: Long
 ) {
+    Text(
+        modifier = modifier.fillMaxWidth(),
+        text = timeHeaderText(timestamp = timestamp),
+        textAlign = TextAlign.Center,
+        color = Color.LightGray
+    )
+}
+
+@Composable
+private fun timeHeaderText(timestamp: Long): AnnotatedString {
     val offsetDateTime = remember(timestamp) {
         Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault())
     }
     val context = LocalContext.current
 
-    Text(
-        modifier = modifier.fillMaxWidth(),
-        text = buildAnnotatedString {
-            withStyle(
-                SpanStyle(
-                    fontWeight = FontWeight.Bold
-                )
-            ) {
-                append(dayFormat.format(offsetDateTime))
+    return buildAnnotatedString {
+        withStyle(
+            SpanStyle(
+                fontWeight = FontWeight.Bold
+            )
+        ) {
+            append(dayFormat.format(offsetDateTime))
+        }
+        append(" ")
+        val timeFormatter = remember {
+            if (DateFormat.is24HourFormat(context)) {
+                DateTimeFormatter.ofPattern("HH:mm")
+            } else {
+                DateTimeFormatter.ofPattern("h:mma")
             }
-            append(" ")
-            val timeFormatter = remember {
-                if (DateFormat.is24HourFormat(context)) {
-                    DateTimeFormatter.ofPattern("HH:mm")
-                } else {
-                    DateTimeFormatter.ofPattern("h:mma")
-                }
-            }
-            append(timeFormatter.format(offsetDateTime))
-        },
-        textAlign = TextAlign.Center,
-        color = Color.LightGray
-    )
+        }
+        append(timeFormatter.format(offsetDateTime))
+    }
 }
 
 @Composable
@@ -134,12 +140,7 @@ private fun MessageBubble(
                 .background(
                     color = if (messageItem.isCurrentUser) MuzzChatTheme.colors.currentUserChat()
                     else MuzzChatTheme.colors.otherUserChat(),
-                    shape = RoundedCornerShape(
-                        topStart = 18.dp,
-                        topEnd = 18.dp,
-                        bottomStart = if (!messageItem.isCurrentUser && messageItem.showTail) 0.dp else 18.dp,
-                        bottomEnd = if (messageItem.isCurrentUser && messageItem.showTail) 0.dp else 18.dp,
-                    )
+                    shape = bubbleShape(messageItem = messageItem)
                 )
                 .padding(8.dp),
             text = messageItem.content,
@@ -148,6 +149,14 @@ private fun MessageBubble(
         )
     }
 }
+
+@Composable
+private fun bubbleShape(messageItem: MessageItem) = RoundedCornerShape(
+    topStart = 18.dp,
+    topEnd = 18.dp,
+    bottomStart = if (!messageItem.isCurrentUser && messageItem.showTail) 0.dp else 18.dp,
+    bottomEnd = if (messageItem.isCurrentUser && messageItem.showTail) 0.dp else 18.dp,
+)
 
 @Preview
 @Composable

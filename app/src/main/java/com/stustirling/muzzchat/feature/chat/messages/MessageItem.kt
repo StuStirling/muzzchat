@@ -1,4 +1,4 @@
-package com.stustirling.muzzchat.feature.chat
+package com.stustirling.muzzchat.feature.chat.messages
 
 data class MessageItem(
     val id: Int,

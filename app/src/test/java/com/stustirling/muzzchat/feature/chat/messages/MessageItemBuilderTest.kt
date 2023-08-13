@@ -1,9 +1,7 @@
-package com.stustirling.muzzchat.feature.chat
+package com.stustirling.muzzchat.feature.chat.messages
 
 import com.stustirling.muzzchat.core.model.Message
-import junit.framework.TestCase.assertEquals
-import junit.framework.TestCase.assertFalse
-import junit.framework.TestCase.assertTrue
+import junit.framework.TestCase
 import org.junit.Test
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -41,17 +39,17 @@ class MessageItemBuilderTest {
                 listOf(middle, oldest, mostRecent)
             )
 
-        assertEquals(
+        TestCase.assertEquals(
             mostRecent.timestamp,
             messageItems[2].timestamp
         )
 
-        assertEquals(
+        TestCase.assertEquals(
             middle.timestamp,
             messageItems[1].timestamp
         )
 
-        assertEquals(
+        TestCase.assertEquals(
             oldest.timestamp,
             messageItems[0].timestamp
         )
@@ -71,8 +69,8 @@ class MessageItemBuilderTest {
             listOf(currentUserMessage, recipientMessage)
         )
 
-        assertFalse(messageItems[1].isCurrentUser)
-        assertTrue(messageItems[0].isCurrentUser)
+        TestCase.assertFalse(messageItems[1].isCurrentUser)
+        TestCase.assertTrue(messageItems[0].isCurrentUser)
     }
 
     @Test
@@ -84,7 +82,7 @@ class MessageItemBuilderTest {
             listOf(firstMessage)
         )
 
-        assertTrue(messageItems[0].showTimeHeading)
+        TestCase.assertTrue(messageItems[0].showTimeHeading)
     }
 
     @Test
@@ -98,7 +96,7 @@ class MessageItemBuilderTest {
             listOf(firstMessage, secondMessage)
         )
 
-        assertTrue(messageItems[1].showTimeHeading)
+        TestCase.assertTrue(messageItems[1].showTimeHeading)
     }
 
     @Test
@@ -112,7 +110,7 @@ class MessageItemBuilderTest {
             listOf(firstMessage, secondMessage)
         )
 
-        assertFalse(messageItems[1].showTimeHeading)
+        TestCase.assertFalse(messageItems[1].showTimeHeading)
     }
 
     @Test
@@ -125,15 +123,15 @@ class MessageItemBuilderTest {
             listOf(firstMessage)
         )
 
-        assertTrue(messageItems[0].showTail)
+        TestCase.assertTrue(messageItems[0].showTail)
 
         messageItems = messageItemBuilder.buildMessageItems(
             CURRENT_USER_ID,
             listOf(firstMessage, secondMessage)
         )
 
-        assertFalse(messageItems[0].showTail)
-        assertTrue(messageItems[1].showTail)
+        TestCase.assertFalse(messageItems[0].showTail)
+        TestCase.assertTrue(messageItems[1].showTail)
     }
 
     @Test
@@ -153,9 +151,9 @@ class MessageItemBuilderTest {
             listOf(firstMessage, secondDelayedMessage, mostRecentMessage)
         )
 
-        assertTrue(messageItems[0].showTail)
-        assertFalse(messageItems[1].showTail)
-        assertTrue(messageItems[2].showTail)
+        TestCase.assertTrue(messageItems[0].showTail)
+        TestCase.assertFalse(messageItems[1].showTail)
+        TestCase.assertTrue(messageItems[2].showTail)
     }
 
     @Test
@@ -179,9 +177,9 @@ class MessageItemBuilderTest {
             listOf(firstMessage, messageFromOtherUser, mostRecentMessage)
         )
 
-        assertTrue(messageItems[0].showTail)
-        assertFalse(messageItems[1].showTail)
-        assertTrue(messageItems[2].showTail)
+        TestCase.assertTrue(messageItems[0].showTail)
+        TestCase.assertFalse(messageItems[1].showTail)
+        TestCase.assertTrue(messageItems[2].showTail)
     }
 
 

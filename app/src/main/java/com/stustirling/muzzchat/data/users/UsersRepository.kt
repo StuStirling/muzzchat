@@ -1,4 +1,4 @@
-package com.stustirling.muzzchat.data.recipients
+package com.stustirling.muzzchat.data.users
 
 import com.stustirling.muzzchat.core.model.User
 import kotlinx.coroutines.flow.Flow

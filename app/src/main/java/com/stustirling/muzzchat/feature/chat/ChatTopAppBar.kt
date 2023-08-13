@@ -37,25 +37,10 @@ internal fun ChatTopAppBar(
     state: ChatScreenState,
     onSwitchAuthor: () -> Unit
 ) {
-    val title = (state as? ChatScreenState.Content)?.otherUser?.name
-    val image = (state as? ChatScreenState.Content)?.otherUser?.imageUrl
+
     TopAppBar(
         title = {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                image?.let {
-                    AsyncImage(
-                        modifier = Modifier
-                            .padding(end = 8.dp)
-                            .clip(CircleShape)
-                            .background(MuzzPink)
-                            .size(36.dp),
-                        model = it,
-                        contentDescription = stringResource(id = R.string.feature_chat_cd_other_user_avatar)
-                    )
-                }
-                Text(text = title.orEmpty())
-            }
-
+            TitleContent(state = (state as? ChatScreenState.Content))
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
         navigationIcon = {
@@ -65,15 +50,49 @@ internal fun ChatTopAppBar(
         },
         actions = {
             if (state is ChatScreenState.Content) {
-                IconButton(onClick = onSwitchAuthor) {
-                    Icon(
-                        if (state.currentAuthor.isCurrentUser) Icons.Filled.Person else Icons.Outlined.Person,
-                        tint = if (state.currentAuthor.isCurrentUser) MuzzChatTheme.colors.currentUserChat()
-                        else MuzzChatTheme.colors.otherUserChat(),
-                        contentDescription = stringResource(id = R.string.feature_chat_cd_switch_author),
-                    )
-                }
+                SwitchAuthorToggle(
+                    onClick = onSwitchAuthor,
+                    currentUserIsAuthor = state.currentAuthor.isCurrentUser
+                )
             }
         }
     )
+}
+
+@Composable
+private fun TitleContent(
+    state: ChatScreenState.Content?
+) {
+    val title = state?.otherUser?.name
+    val image = state?.otherUser?.imageUrl
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        image?.let {
+            AsyncImage(
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .clip(CircleShape)
+                    .background(MuzzPink)
+                    .size(36.dp),
+                model = it,
+                contentDescription = stringResource(id = R.string.feature_chat_cd_other_user_avatar)
+            )
+        }
+        Text(text = title.orEmpty())
+    }
+}
+
+@Composable
+private fun SwitchAuthorToggle(
+    onClick: () -> Unit,
+    currentUserIsAuthor: Boolean
+) {
+    IconButton(onClick = onClick) {
+        Icon(
+            imageVector = if (currentUserIsAuthor) Icons.Filled.Person else Icons.Outlined.Person,
+            tint = if (currentUserIsAuthor) MuzzChatTheme.colors.currentUserChat()
+            else MuzzChatTheme.colors.otherUserChat(),
+            contentDescription = stringResource(id = R.string.feature_chat_cd_switch_author),
+        )
+    }
 }

@@ -1,7 +1,7 @@
 package com.stustirling.muzzchat.testing
 
 import androidx.annotation.VisibleForTesting
-import com.stustirling.muzzchat.data.recipients.UsersRepository
+import com.stustirling.muzzchat.data.users.UsersRepository
 import com.stustirling.muzzchat.core.model.User
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.Flow

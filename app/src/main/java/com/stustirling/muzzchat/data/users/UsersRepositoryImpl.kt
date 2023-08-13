@@ -1,4 +1,4 @@
-package com.stustirling.muzzchat.data.recipients
+package com.stustirling.muzzchat.data.users
 
 import com.stustirling.muzzchat.data.database.dao.UserDao
 import com.stustirling.muzzchat.core.model.User
