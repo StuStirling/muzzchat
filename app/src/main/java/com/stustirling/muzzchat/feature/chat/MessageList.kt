@@ -11,11 +11,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,6 +36,7 @@ import com.stustirling.muzzchat.feature.chat.theme.onCurrentUserChat
 import com.stustirling.muzzchat.feature.chat.theme.onOtherUserChat
 import com.stustirling.muzzchat.feature.chat.theme.otherUserChat
 import com.stustirling.muzzchat.ui.theme.MuzzChatTheme
+import kotlinx.coroutines.launch
 import java.time.Instant
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -43,8 +48,10 @@ internal fun MessageList(
     modifier: Modifier = Modifier,
     messages: List<MessageItem>
 ) {
+    val lazyListState = rememberLazyListState()
     LazyColumn(
         modifier = modifier,
+        state = lazyListState,
         contentPadding = PaddingValues(16.dp),
         reverseLayout = true,
     ) {
@@ -68,6 +75,13 @@ internal fun MessageList(
                 )
             }
 
+        }
+    }
+
+    val coroutineScope = rememberCoroutineScope()
+    LaunchedEffect(messages.lastOrNull()) {
+        coroutineScope.launch {
+            lazyListState.animateScrollToItem(0)
         }
     }
 }
