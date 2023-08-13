@@ -1,6 +1,7 @@
 package com.stustirling.muzzchat.feature.chat
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -27,6 +28,7 @@ import com.stustirling.muzzchat.R
 import com.stustirling.muzzchat.feature.chat.theme.currentUserChat
 import com.stustirling.muzzchat.feature.chat.theme.otherUserChat
 import com.stustirling.muzzchat.ui.theme.MuzzChatTheme
+import com.stustirling.muzzchat.ui.theme.MuzzPink
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -43,11 +45,12 @@ internal fun ChatTopAppBar(
                 image?.let {
                     AsyncImage(
                         modifier = Modifier
+                            .padding(end = 8.dp)
                             .clip(CircleShape)
-                            .size(36.dp)
-                            .padding(end = 8.dp),
+                            .background(MuzzPink)
+                            .size(36.dp),
                         model = it,
-                        contentDescription = null
+                        contentDescription = stringResource(id = R.string.feature_chat_cd_other_user_avatar)
                     )
                 }
                 Text(text = title.orEmpty())

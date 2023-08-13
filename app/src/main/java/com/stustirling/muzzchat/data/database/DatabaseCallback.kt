@@ -26,7 +26,7 @@ class DatabaseCallback : RoomDatabase.Callback() {
             put("name", "Sarah")
             put(
                 "image_url",
-                "https://gravatar.com/avatar/49d685c31efb0f1b2cfea4ff99500676?s=400&d=robohash&r=x"
+                "https://gravatar.com/avatar/9087300ed80fbb841e669635cf9c77aa?s=400&d=robohash&r=x"
             )
         })
     }
