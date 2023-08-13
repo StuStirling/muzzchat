@@ -1,5 +1,6 @@
 package com.stustirling.muzzchat.feature.chat
 
+import android.text.format.DateFormat
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -17,7 +18,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -28,11 +31,10 @@ import androidx.compose.ui.unit.dp
 import com.stustirling.muzzchat.ui.theme.MuzzChatTheme
 import com.stustirling.muzzchat.ui.theme.MuzzPink
 import java.time.Instant
-import java.time.ZoneOffset
+import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
 private val dayFormat = DateTimeFormatter.ofPattern("eeee")
-private val timeFormat = DateTimeFormatter.ofPattern("HH:mm")
 
 @Composable
 internal fun MessageList(
@@ -74,10 +76,9 @@ private fun TimeHeader(
     timestamp: Long
 ) {
     val offsetDateTime = remember(timestamp) {
-        Instant.ofEpochMilli(timestamp).atOffset(
-            ZoneOffset.UTC
-        )
+        Instant.ofEpochMilli(timestamp).atZone(ZoneId.systemDefault())
     }
+    val context = LocalContext.current
 
     Text(
         modifier = modifier.fillMaxWidth(),
@@ -90,7 +91,14 @@ private fun TimeHeader(
                 append(dayFormat.format(offsetDateTime))
             }
             append(" ")
-            append(timeFormat.format(offsetDateTime))
+            val timeFormatter = remember {
+                if (DateFormat.is24HourFormat(context)) {
+                    DateTimeFormatter.ofPattern("HH:mm")
+                } else {
+                    DateTimeFormatter.ofPattern("h:mma")
+                }
+            }
+            append(timeFormatter.format(offsetDateTime))
         },
         textAlign = TextAlign.Center,
         color = Color.LightGray

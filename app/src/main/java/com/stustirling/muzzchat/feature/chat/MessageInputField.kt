@@ -19,8 +19,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.stustirling.muzzchat.ui.theme.MuzzPink
 
 @Composable
@@ -43,8 +45,8 @@ internal fun MessageInputField(
                 colors = TextFieldDefaults.colors(
                     unfocusedIndicatorColor = if (enteredMessage.isBlank()) Color.LightGray else MuzzPink,
                     focusedIndicatorColor = MuzzPink,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.primary,
-                    focusedContainerColor = MaterialTheme.colorScheme.primary,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.background,
+                    focusedContainerColor = MaterialTheme.colorScheme.background,
                     cursorColor = Color.Black
                 ),
                 shape = RoundedCornerShape(50),

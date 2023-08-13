@@ -1,9 +1,11 @@
 package com.stustirling.muzzchat.feature.chat
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
@@ -15,8 +17,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.stustirling.muzzchat.core.model.User
 import com.stustirling.muzzchat.ui.theme.MuzzChatTheme
@@ -42,9 +47,6 @@ private fun ChatScreen(
     Scaffold(
         topBar = {
             ChatTopAppBar(onNavigateUp = onNavigateUp, state = chatScreenState)
-        },
-        bottomBar = {
-
         }
     ) {
         Box(
@@ -65,12 +67,32 @@ private fun ChatScreen(
 
                 is ChatScreenState.Content -> {
                     Column(Modifier.fillMaxWidth()) {
-                        MessageList(
+                        Box(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .weight(1f),
-                            messages = chatScreenState.messages
-                        )
+                                .weight(1f)
+                        ) {
+                            MessageList(
+                                modifier = Modifier
+                                    .fillMaxSize(),
+                                messages = chatScreenState.messages
+                            )
+
+                            Shadow(
+                                modifier = Modifier
+                                    .align(Alignment.BottomStart)
+                                    .fillMaxWidth()
+                                    .rotate(180f)
+                            )
+
+                            Shadow(
+                                modifier = Modifier
+                                    .align(Alignment.TopStart)
+                                    .fillMaxWidth()
+                                    .rotate(0f)
+                            )
+                        }
+
 
                         MessageInputField(
                             modifier = Modifier.fillMaxWidth(),
@@ -91,6 +113,22 @@ private fun ChatScreen(
     }
 }
 
+@Composable
+fun Shadow(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(8.dp)
+            .background(
+                brush = Brush.verticalGradient(
+                    colors = listOf(
+                        Color.Black.copy(alpha = .1f),
+                        Color.Transparent,
+                    )
+                )
+            )
+    )
+}
 
 @Composable
 private fun UnrecoverableErrorDialog(onConfirm: () -> Unit) {
